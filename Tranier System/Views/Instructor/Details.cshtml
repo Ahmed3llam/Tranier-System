@@ -1,0 +1,16 @@
+﻿@model Instructor
+@{
+    ViewData["Tiltle"] = "Profile";
+}
+<h1>Instructor Profile</h1>
+<div class="card flex-row mx-auto my-5">
+    <img src="~/images/@Model.Image" class="card-img-top mx-auto " alt="Product Image" style="width: 30vw; height: 30vh;" alt="Product Image" />
+    <div class="card-body my-auto">
+        <h5 class="card-title">Name: @Model.Name</h5>
+        <h5 class="card-text">Address: @Model.Address</h5>
+        <h5 class="card-text">Salary: @Model.Salary</h5>
+        <h5 class="card-text">Department: @Model.DepartmentId</h5>
+        <h5 class="card-text">Course : @Model.CourseId</h5>
+    </div>
+</div>
+<a href="/Instructor/Index" class="btn btn-primary mx-auto my-auto">Back To All Products</a>

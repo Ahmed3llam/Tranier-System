@@ -1,0 +1,30 @@
+﻿@model List<Instructor>
+<a href="/Instructor/Add" class="btn btn-primary mt-3">Add Instructor</a>
+<br />
+<table class="table table-bordered table-hover text-center table-responsive mt-3 ">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Salary</th>
+            <th>Department</th>
+            <th>Course</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Instructor item in Model)
+        {
+            <tr>
+                <th><img src="~/images/@item.Image" style="width:70px;height:70px" /></th>
+                <th>@item.Name</th>
+                <th>@item.Address</th>
+                <th>@item.Salary</th>
+                <th>@item.DepartmentId</th>
+                <th>@item.CourseId</th>
+                <td><a href="/Instructor/Details/@item.Id" class="btn btn-primary mt-3">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

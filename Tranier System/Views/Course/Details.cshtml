@@ -1,0 +1,14 @@
+﻿@model Course
+@{
+    ViewData["Tiltle"] = "Course data";
+}
+<h2 class="text-center mt-0">Course Details</h2>
+<div class="card flex-row mx-auto my-5">
+    <div class="card-body my-auto">
+        <h5 class="card-title">Name: @Model.Name</h5>
+        <h5 class="card-text">Degree: @Model.Degree</h5>
+        <h5 class="card-text">Min Degree: @Model.MinDegree</h5>
+        <h5 class="card-text">Department: @ViewBag.Dept.Name</h5>
+    </div>
+</div>
+<a asp-action="Index" asp-controller="Course"  class="btn btn-primary mx-auto my-auto">Back To All Courses</a>

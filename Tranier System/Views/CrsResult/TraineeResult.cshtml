@@ -1,0 +1,20 @@
+﻿@model List<TraineeResultViewModel>
+
+<table class="table table-bordered table-hover text-center table-responsive">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Degree</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (TraineeResultViewModel item in Model)
+        {
+
+            <tr style="color: @item.Color;font-size:23px">
+                <td>@item.CourseName</td>
+                <td>@item.Degree</td>
+            </tr>
+        }
+    </tbody>
+</table>
