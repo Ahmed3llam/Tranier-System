@@ -3,26 +3,43 @@
 }
 @model Course
 <h2 class="text-center mt-0">Add New Course </h2>
+<hr class="divider" />
 <form asp-action="Add" asp-controller="Course" method="post">
     <div>
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form form-control" />
+        <br />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+    <br />
     <div>
         <label asp-for="Degree"></label>
         <input asp-for="Degree" class="form form-control" />
+        <br />
+        <span asp-validation-for="Degree" class="text-danger"></span>
     </div>
+    <br />
     <div>
         <label asp-for="MinDegree"></label>
         <input asp-for="MinDegree" class="form form-control" />
+        <br />
+        <span asp-validation-for="MinDegree" class="text-danger"></span>
     </div>
+    <br />
     <div>
         <label asp-for="DepartmentId"></label>
         <select asp-for="DepartmentId" asp-items="deps" class="form form-control"></select>
+        <br />
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
     </div>
     <br />
-    <center><input type="submit" value="Add" class="btn btn-dark" /></center>
+    <center><input type="submit" value="Add" class="btn btn-primary" /></center>
 </form>
 <br />
+<br />
 
-<a class="btn btn-dark" asp-action="Index" asp-controller="Course">Back</a>
+<a class="btn btn-dark my-5 " style="width:100px" asp-action="Index" asp-controller="Course">Back</a>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

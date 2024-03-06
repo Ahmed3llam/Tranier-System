@@ -9,6 +9,12 @@ namespace Tranier_System.Controllers
     {
         TContext db = new TContext();
 
+        public IActionResult CheckMinDegree(int MinDegree,int Degree)
+        {
+            if (MinDegree < Degree)
+                return Json(true);
+            return Json(false);
+        }
         public IActionResult Index()
         {
             List<Course> Course = db.course.ToList();
@@ -30,7 +36,7 @@ namespace Tranier_System.Controllers
         [HttpPost]
         public IActionResult Add(Course crs)
         {
-            if (crs.Name != null && crs.Degree != 0 && crs.MinDegree != 0 && crs.DepartmentId != 0 )
+            if (ModelState.IsValid == true)
             {
                 db.Add(crs);
                 db.SaveChanges();
