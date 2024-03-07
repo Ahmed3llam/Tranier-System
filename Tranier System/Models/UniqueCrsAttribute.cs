@@ -10,7 +10,7 @@ namespace Tranier_System.Models
             string CrsName = value?.ToString();
             TContext context = new TContext();
             Course course = context.course.FirstOrDefault(c=>c.Name== CrsName && c.DepartmentId==FormCrs.DepartmentId);
-            if (course == null)
+            if (course == null || course.Id==FormCrs.Id)
             {
                 return ValidationResult.Success;
             }

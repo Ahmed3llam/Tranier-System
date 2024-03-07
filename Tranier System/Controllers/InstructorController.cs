@@ -67,5 +67,15 @@ namespace Tranier_System.Controllers
             ins.Courses = db.course.ToList();
             return View("AddInstructor", ins);
         }
+        public IActionResult Deps()
+        {
+            List<Department> deps = db.Department.ToList();
+            return Json(deps);
+        }
+        public IActionResult CrsInDeps(int id)
+        {
+            List<Course> crs = db.course.Where(c=>c.DepartmentId==id).ToList();
+            return Json(crs);
+        }
     }
 }

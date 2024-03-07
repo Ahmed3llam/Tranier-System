@@ -8,7 +8,7 @@ namespace Tranier_System.Models
     {
         public int Id { get; set; }
         [UniqueCrs]
-        [MinLength(3,ErrorMessage ="Name must be more than 3 letters")]
+        [MinLength(1,ErrorMessage ="Name must be more than 1 letters")]
         [MaxLength(30,ErrorMessage = "Name must be less than 30 letters")]
         public string Name { get; set; }
         [Range(50,100,ErrorMessage ="Grade must be in range 50 to 100")]

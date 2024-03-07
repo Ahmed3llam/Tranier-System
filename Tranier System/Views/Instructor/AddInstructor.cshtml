@@ -1,31 +1,29 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model InstDeptVM
-<h2>Add New Instructor </h2>
+﻿@model InstDeptVM
+
+<h2 class="text-center mt-0">Add New Instructor</h2>
+<hr class="divider" />
+
 <form action="/Instructor/SaveAdd" method="post" enctype="multipart/form-data">
     <div>
-        <label>Name</label>
-        <input type="text" value="@Model?.Name" name="Name" id="Name" class="form form-control" />
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form form-control" />
     </div>
     <div>
-        <label>Address</label>
-        <input type="text" value="@Model?.Address" name="Address" id="Address" class="form form-control" />
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="form form-control" />
     </div>
     <div>
-        <label>Salary</label>
-        <input type="text" value="@Model?.Salary" name="Salary" id="Salary" class="form form-control" />
+        <label asp-for="Salary"></label>
+        <input asp-for="Salary" class="form form-control" />
     </div>
     <div>
-        <label>Image</label>
-        <input type="file" name="Image" id="Image" class="form form-control" />
-        @* <input type="file" value="@Model?.Image" name="Image" id="Image" class="form form-control" /> *@
+        <label asp-for="Image"></label>
+        <input type="file" asp-for="Image" class="form form-control" />
     </div>
     <div>
-        <label>Department</label>
-        <select name="DepartmentId" id="DepartmentId" class="form form-control">
+        <label asp-for="DepartmentId"></label>
+        <select asp-for="DepartmentId" class="form form-control" onchange="GetCrs()">
+            <option value="0">--Select Department--</option>
             @foreach (var department in Model.Depts)
             {
                     @if (department.Id==Model.DepartmentId)
@@ -39,9 +37,9 @@
         </select>
     </div>
     <div>
-        <label>Course</label>
-        <select name="CourseId" id="CourseId" class="form form-control">
-            @foreach (var course in Model.Courses)
+        <label asp-for="CourseId"></label>
+        <select asp-for="CourseId" class="form form-control">
+           @*  @foreach (var course in Model.Courses)
             {
                 @if (course.Id == Model.CourseId)
                 {
@@ -51,12 +49,39 @@
                 {
                     <option value="@course.Id">@course.Name</option>
                 }
-            }
+            } *@
         </select>
     </div>
     <br />
-    <center><input type="submit" value="Add" class="btn btn-dark" /></center>
+    <center><input type="submit" value="Add" class="btn btn-primary" /></center>
 </form>
 <br />
 
-<a class="btn btn-dark" href="/Instructor/Index">Back</a>
+<a class="btn btn-dark my-5 " style="width:100px" href="/Instructor/Index">Back</a>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    function GetCrs() {
+        let val = document.getElementById("DepartmentId").value;
+        let selectedCourseId = $("#CourseId").val();
+        if (val != 0) {
+            $.ajax({
+                url: `/Instructor/CrsInDeps/${val}`,
+                success: function (result) {
+                    var courseSelect = document.getElementById("CourseId");
+                    courseSelect.innerHTML = "";
+                    for (let crs of result) {
+                        let option = document.createElement("option");
+                        option.value = crs.id; 
+                        option.text = crs.name;
+                        courseSelect.appendChild(option);
+                    }
+                    if ($("#CourseId option[value='" + selectedCourseId + "']").length > 0) {
+                        $("#CourseId").val(selectedCourseId);
+                    }
+                }
+            });
+        }
+    }
+</script>
