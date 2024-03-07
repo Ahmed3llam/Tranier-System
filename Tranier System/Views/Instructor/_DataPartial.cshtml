@@ -1,0 +1,29 @@
+﻿@model Instructor
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Instructor Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h1>Instructor Profile</h1>
+                <div class="card flex-row mx-auto my-5">
+                    <img src="~/images/@Model.Image" class="card-img-top mx-auto" alt="Product Image" style="width: 20vw; height: 20vh;" />
+                    <div class="card-body my-auto">
+                        <h5 class="card-title">Name: @Model.Name</h5>
+                        <h5 class="card-text">Address: @Model.Address</h5>
+                        <h5 class="card-text">Salary: @Model.Salary</h5>
+                        <h5 class="card-text">Department: @Model.DepartmentId</h5>
+                        <h5 class="card-text">Course: @Model.CourseId</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,7 @@
 ﻿@model List<Instructor>
+
+<div id="modal-placeholder"></div>
+<br />
 <a href="/Instructor/Add" class="btn btn-primary mt-3">Add Instructor</a>
 <br />
 <table class="table table-bordered table-hover text-center table-responsive mt-3 ">
@@ -23,8 +26,56 @@
                 <th>@item.Salary</th>
                 <th>@item.DepartmentId</th>
                 <th>@item.CourseId</th>
-                <td><a href="/Instructor/Details/@item.Id" class="btn btn-primary mt-3">Details</a></td>
+                <td>
+                    <a href="#" class="btn btn-primary mt-3" onclick="GetModalContent(@item.Id)">Details</a>
+                    <a href="#" class="btn btn-secondary mt-3" onclick="EditModalContent(@item.Id)">Edit</a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Math.Ceiling((double)(int)ViewData["TotalItems"] / (int)ViewData["content"]); i++)
+        {
+            <li class="page-item @(i == (int)ViewData["Page"] ? "active" : "")">
+                <a class="page-link btn btn-secondary mx-1" asp-action="Index" asp-controller="Instructor" asp-route-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.esm.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.esm.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script>
+    function GetModalContent(id) {
+        console.log("id=", id);
+        $.ajax({
+            url: `/Instructor/DataPartial/${id}`,
+            success: function (result) {
+                $("#modal-placeholder").html(result);
+                $('#exampleModal').modal('show');
+                console.log(result);
+
+            }
+        });
+    }
+    function EditModalContent(id) {
+        console.log("id=", id);
+        $.ajax({
+            url: `/Instructor/DataEditPartial/${id}`,
+            success: function (result) {
+                $("#modal-placeholder").html(result);
+                $('#editModal').modal('show');
+                console.log(result);
+            }
+        });
+    }
+</script>

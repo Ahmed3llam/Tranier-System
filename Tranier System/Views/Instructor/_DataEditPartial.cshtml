@@ -1,0 +1,103 @@
+﻿@model Instructor
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm" method="post" asp-controller="Instructor" asp-action="Edit" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Instructor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label"></label>
+                        <input asp-for="Address" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Salary" class="form-label"></label>
+                        <input asp-for="Salary" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Image" class="form-label"></label>
+                        <input type="file" asp-for="Image" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DepartmentId" class="form-label"></label>
+                        <select asp-for="DepartmentId" class="form-select" onchange="GetCrs()">
+                            <option value="0">--Select Department--</option>
+                            @foreach (var department in ViewData["Deps"] as List<Department>)
+                            {
+                                if (department.Id == Model.DepartmentId)
+                                {
+                                    <option selected value="@department.Id">@department.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@department.Id">@department.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CourseId" class="form-label"></label>
+                        <select asp-for="CourseId" class="form-select" id="editCourseId">
+                            @foreach (var course in ViewData["Crs"] as List<Course>)
+                            {
+                                if (course.Id == Model.CourseId)
+                                {
+                                    <option selected value="@course.Id">@course.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@course.Id">@course.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<!-- Include Bootstrap JavaScript -->
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    function GetCrs() {
+        let val = $("#DepartmentId").val();
+        let selectedCourseId = $("#CourseId").val();
+        if (val != 0) {
+            $.ajax({
+                url: `/Instructor/CrsInDeps/${val}`,
+                success: function (result) {
+                    console.log(result); // Log the result data
+                    var courseSelect = $("#CourseId");
+                    courseSelect.empty(); // Clear existing options
+                    $.each(result, function (index, course) {
+                        console.log(course.id, course.name); // Log each course ID and Name
+                        courseSelect.append($('<option></option>').attr('value', course.id).text(course.name)); // Append option
+                    });
+                    if ($("#CourseId option[value='" + selectedCourseId + "']").length > 0) {
+                        $("#CourseId").val(selectedCourseId); // Set selected option
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText); // Log any errors
+                }
+            });
+        }
+    }
+
+</script>
