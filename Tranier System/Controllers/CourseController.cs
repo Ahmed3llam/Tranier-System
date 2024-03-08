@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Tranier_System.Models;
+using Tranier_System.Repository;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Tranier_System.Controllers
 {
     public class CourseController : Controller
     {
-        TContext db = new TContext();
-
+        //TContext db = new TContext();
+        ICourseRepository courseRepository;
+        IDepartmentRepository departmentRepository;
+        public CourseController(ICourseRepository crsrepo, IDepartmentRepository deptrepo)
+        {
+            courseRepository = crsrepo;
+            departmentRepository = deptrepo;
+        }
         public IActionResult CheckMinDegree(int MinDegree,int Degree)
         {
             if (MinDegree < Degree)
@@ -19,25 +26,24 @@ namespace Tranier_System.Controllers
         {
             int content = 3;
             int skip = (page - 1) * content;
-            List<Course> courses = db.course.Skip(skip).Take(content).ToList();
-            int totalCourses = db.course.Count();
+            List<Course> courses = courseRepository.GetSome(skip,content);
+            int totalCourses = courseRepository.Count();
             ViewData["Page"] = page;
             ViewData["content"] = content;
             ViewData["TotalItems"] = totalCourses;
-            //List<Course> Course = db.course.ToList();
-            ViewData["Deps"] = db.Department.ToList();
+            ViewData["Deps"] = departmentRepository.GetAll();
             return View("Index", courses);
         }
         public IActionResult Details(int id)
         {
-            Course crs = db.course.SingleOrDefault(i => i.Id == id);
-            ViewData["Dept"] = db.Department.SingleOrDefault(i=>i.Id==crs.DepartmentId);
+            Course crs =courseRepository.Get(id);
+            ViewData["Dept"] = departmentRepository.Get(crs.DepartmentId);
             return View("Details", crs);
         }
         [HttpGet]
         public IActionResult Add()
         {
-            ViewData["Deps"] = db.Department.ToList();
+            ViewData["Deps"] = departmentRepository.GetAll();
             return View("Add");
         }
         [HttpPost]
@@ -45,19 +51,21 @@ namespace Tranier_System.Controllers
         {
             if (ModelState.IsValid == true)
             {
-                db.Add(crs);
-                db.SaveChanges();
+                courseRepository.Insert(crs);
+                courseRepository.Save();
+                //db.Add(crs);
+                //db.SaveChanges();
                 return RedirectToAction("Index");
 
             }
-            ViewData["Deps"] = db.Department.ToList();
+            ViewData["Deps"] = departmentRepository.GetAll();
             return View("Add");
         }
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            ViewData["Deps"] = db.Department.ToList();
-            Course data = db.course.SingleOrDefault(c => c.Id == id);
+            ViewData["Deps"] = departmentRepository.GetAll();
+            Course data = courseRepository.Get(id);
             return View("Edit",data);
         }
         [HttpPost]
@@ -65,18 +73,20 @@ namespace Tranier_System.Controllers
         {
             if (ModelState.IsValid == true)
             {
-                db.Update(crs);
-                db.SaveChanges();
+                courseRepository.Update(crs);
+                courseRepository.Save();
+                //db.Update(crs);
+                //db.SaveChanges();
                 return RedirectToAction("Index");
 
             }
-            ViewData["Deps"] = db.Department.ToList();
+            ViewData["Deps"] = departmentRepository.GetAll();
             return View("Edit");
         }
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            Course crs = db.course.SingleOrDefault(c => c.Id == id);
+            Course crs = courseRepository.Get(id);
             return View("Delete", crs);
         }
         [HttpPost]
@@ -86,8 +96,10 @@ namespace Tranier_System.Controllers
             {
                 return NotFound();
             }
-            db.Remove(crs);
-            db.SaveChanges();
+            courseRepository.Delete(crs.Id);
+            courseRepository.Save();
+            //db.Remove(crs);
+            //db.SaveChanges();
             return RedirectToAction("Index");
         }
     }

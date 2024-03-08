@@ -1,14 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tranier_System.Models;
+using Tranier_System.Repository;
 
 namespace Tranier_System.Controllers
 {
     public class CrsResultController : Controller
     {
-        TContext db = new TContext();
+        //TContext db = new TContext();
+        ICrsResultRepository CrsResultRepository;
+        public CrsResultController(ICrsResultRepository CrsResultRepo)
+        {
+            CrsResultRepository = CrsResultRepo;
+        }
         public IActionResult CourceResult(int id)
         {
-            var results = db.CrsResult.Where(i => i.CourseId == id).
+            var results = CrsResultRepository.GetForCourse(id).
                 Select(c => new TraineeResultViewModel
                 {
                     TraineeName = c.Trainee.Name,
@@ -24,7 +30,7 @@ namespace Tranier_System.Controllers
         }
         public IActionResult TraineeResult(int id)
         {
-            var results = db.CrsResult.Where(i => i.TranieeId == id).
+            var results = CrsResultRepository.GetForTrainee(id).
                 Select(c => new TraineeResultViewModel { 
                     TraineeName = c.Trainee.Name, 
                     CourseName = c.Course.Name, 

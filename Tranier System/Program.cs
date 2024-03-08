@@ -1,4 +1,7 @@
 using Microsoft.Extensions.Options;
+using Tranier_System.Repository;
+using Tranier_System.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tranier_System
 {
@@ -14,6 +17,19 @@ namespace Tranier_System
             {
                 Options.IdleTimeout=TimeSpan.FromMinutes(35);
             });
+
+            builder.Services.AddDbContext<TContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DB"));
+            });
+
+            builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+            builder.Services.AddScoped<ITraineeRepository, TraineeRepository>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<ICrsResultRepository, CrsResultRepository>();
+
+            
             var app = builder.Build();
             //midd
             //app.Use(async (HttpContext, next) =>

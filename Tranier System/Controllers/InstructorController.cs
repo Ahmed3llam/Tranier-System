@@ -1,50 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tranier_System.Models;
+using Tranier_System.Repository;
 
 namespace Tranier_System.Controllers
 {
     public class InstructorController : Controller
     {
-        TContext db= new TContext();
-        //int count;
-        //public InstructorController()
-        //{
-        //    count = 0;
-        //}
+        //TContext db= new TContext();
+        IInstructorRepository instructorRepository;
+        ICourseRepository courseRepository;
+        IDepartmentRepository departmentRepository;
+        public InstructorController(IInstructorRepository insrepo,ICourseRepository crsrepo,IDepartmentRepository deptrepo)
+        {
+            instructorRepository = insrepo;
+            courseRepository = crsrepo;
+            departmentRepository = deptrepo;
+        }
         public IActionResult Index(int page=1)
         {
-            //count++;
-            //HttpContext.Session.SetString("","");
-            //HttpContext.Response.Cookies.Append("","");
-            //CookieOptions options = new CookieOptions();
-            //options.Expires = DateTime.Now.AddDays(2);
-            //Response.Cookies.Append("", "",options);
-            //var instructorsModel = db.Instructor.Select(i=> new {i.Id,i.Name,i.Image,i.Salary,i.Address,Department = i.Department.Name,Course = i.Course.Name }).ToList();
             int content = 3;
             int skip = (page - 1) * content;
-            List<Instructor> instructors = db.Instructor.Skip(skip).Take(content).ToList();
-            int totalInstructors = db.Instructor.Count();
+            List<Instructor> instructors = instructorRepository.GetSome(skip,content);
+            int totalInstructors = instructorRepository.Count();
             ViewData["Page"] = page;
             ViewData["content"] = content;
             ViewData["TotalItems"] = totalInstructors;
-            //List<Course> Course = db.course.ToList();
-            //ViewData["Deps"] = db.Department.ToList();
-            //return View("Index", courses);
-
-            //List<Instructor> instructors = db.Instructor.ToList();
             return View("Index",instructors);
         }
         public IActionResult Details(int id)
         {
-            //string? n=Request.Cookies[""];
-            Instructor instructor = db.Instructor.SingleOrDefault(i=>i.Id==id);
+            Instructor instructor = instructorRepository.Get(id);
             return View("Details", instructor);
         }
         public IActionResult Add()
         {
             InstDeptVM data = new InstDeptVM();
-            data.Depts=db.Department.ToList();
-            data.Courses=db.course.ToList();
+            data.Depts=departmentRepository.GetAll();
+            data.Courses=courseRepository.GetAll();
             return View("AddInstructor",data);
         }
         [HttpPost]
@@ -68,30 +60,32 @@ namespace Tranier_System.Controllers
                     CourseId=ins.CourseId,
                     Image=ins.Image,
                 };
-                db.Add(Newins);
-                db.SaveChanges();
+                instructorRepository.Update(Newins);
+                instructorRepository.Save();
+                //db.Add(Newins);
+                //db.SaveChanges();
                 return RedirectToAction("Index");
                 
             }
-            ins.Depts=db.Department.ToList();
-            ins.Courses = db.course.ToList();
+            ins.Depts=departmentRepository.GetAll();
+            ins.Courses = courseRepository.GetAll();
             return View("AddInstructor", ins);
         }
         public IActionResult Deps()
         {
-            List<Department> deps = db.Department.ToList();
+            List<Department> deps = departmentRepository.GetAll();
             return Json(deps);
         }
         public IActionResult CrsInDeps(int id)
         {
-            List<Course> crs = db.course.Where(c=>c.DepartmentId==id).ToList();
+            List<Course> crs = courseRepository.GetForDepartment(id);
             return Json(crs);
         }
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            ViewData["Deps"] = db.Department.ToList();
-            Course data = db.course.SingleOrDefault(c => c.Id == id);
+            ViewData["Deps"] = departmentRepository.GetAll();
+            Course data = courseRepository.Get(id);
             return View("Edit", data);
         }
         [HttpPost]
@@ -107,24 +101,26 @@ namespace Tranier_System.Controllers
                     Image.CopyTo(fs);
                     ins.Image = FileName;
                 }
-                db.Update(ins);
-                db.SaveChanges();
+                instructorRepository.Update(ins);
+                instructorRepository.Save();
+                //db.Update(ins);
+                //db.SaveChanges();
                 return RedirectToAction("Index");
 
             }
-            ViewData["Deps"] = db.Department.ToList();
+            ViewData["Deps"] = departmentRepository.GetAll();
             return PartialView("_DataPartial",ins);
         }
         public IActionResult DataPartial(int id)
         {
-            Instructor instructor = db.Instructor.SingleOrDefault(i => i.Id == id);
+            Instructor instructor =instructorRepository.Get(id);
             return PartialView("_DataPartial", instructor);
         }
         public IActionResult DataEditPartial(int id)
         {
-            ViewData["Deps"] = db.Department.ToList();
-            ViewData["Crs"] = db.course.ToList();
-            Instructor instructor = db.Instructor.SingleOrDefault(i => i.Id == id);
+            ViewData["Deps"] = departmentRepository.GetAll();
+            ViewData["Crs"] = courseRepository.GetAll();
+            Instructor instructor = instructorRepository.Get(id);
             return PartialView("_DataEditPartial", instructor);
         }
     }

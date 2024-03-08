@@ -5,6 +5,7 @@ namespace Tranier_System.Models
     public class TContext:DbContext
     {
         public TContext():base() { }
+        public TContext(DbContextOptions<TContext> options) : base(options) { }
         public DbSet<Instructor> Instructor { get; set; }
         public DbSet<Course> course { get; set; }
         public DbSet<CrsResult> CrsResult { get; set; }
